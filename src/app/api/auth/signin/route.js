@@ -5,5 +5,11 @@ export const GET = async (request) => {
 };
 
 export const POST = async (request) => {
-  return NextResponse.json({ success: true });
+  const { email, password } = await request.json();
+  const response = NextResponse.json(
+    { message: "success", email, name: "Prayag" },
+    { status: 200 }
+  );
+  response.cookies.set("user", email);
+  return response;
 };

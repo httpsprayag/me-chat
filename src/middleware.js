@@ -1,10 +1,9 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import { useAuth } from "./utils/useAuth";
+import { NextResponse } from "next/server";
 
 export async function middleware(request) {
-  const user = false;
-  if (!user) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  const cookie = request.cookies.get("email");
+  if (!cookie) {
+    return NextResponse.redirect(new URL("/signin", request.url));
   }
 }
 

@@ -1,16 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { auth } from "../../../firebase/config";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { getCookie } from "cookies-next";
+import axios from "axios";
+import { userLogin } from "../../../../redux/thunks/signin";
 
 const SigninPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-
+  const disptch = useDispatch();
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -22,21 +24,26 @@ const SigninPage = () => {
   };
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
     try {
-      e.preventDefault();
-      const res = await signInWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password
-      );
-      if (res.user) {
-        router.push("/");
-        localStorage.setItem("user", JSON.stringify(res.user));
-        alert("Logged in successfull...");
-      }
-      console.log("Response :", res);
-      sessionStorage.setItem("user", true);
+      const { email, password } = formData;
+      disptch(userLogin({ email, password }));
+
+      // const res = await signInWithEmailAndPassword(
+      //   auth,
+      //   formData.email,
+      //   formData.password
+      // );
+      // setCookie("email", formData.email);
+      // if (res.user) {
+      //   router.push("/");
+      //   localStorage.setItem("user", JSON.stringify(res.user));
+      //   alert("Logged in successfull...");
+      // }
+      // disptch(loginUser(JSON.stringify(res.user)));
+      // console.log("Response :", res);
+      // sessionStorage.setItem("user", true);
     } catch (error) {
       console.log({ error });
       setLoading(false);
